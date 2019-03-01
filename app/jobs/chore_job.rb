@@ -2,6 +2,7 @@ class ChoreJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    puts "ok, here we go..."
+    chore = Chore.new run_at: Time.now
+    chore.save!
   end
 end

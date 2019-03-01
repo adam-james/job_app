@@ -3,3 +3,22 @@
 <%= form_tag("/run-job", method: "post") do %>
   <button>Run Job</button>
 <% end %>
+
+<h2>Previous Jobs</h2>
+
+<% @chores.each do |chore| %>
+  <table>
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Run At</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><%= chore.id %></td>
+        <td><%= chore.run_at %></td>
+      </tr>
+    </tbody>
+  </table>
+<% end %>
