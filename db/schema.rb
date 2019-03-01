@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema.define(version: 2019_03_01_184536) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "chores", force: :cascade do |t|
     t.datetime "run_at"
     t.datetime "created_at", null: false

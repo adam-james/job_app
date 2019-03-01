@@ -1,6 +1,6 @@
 class ChoresController < ApplicationController
   def index
-    @chores = Chore.all
+    @chores = Chore.order(run_at: :desc).limit(10)
   end
 
   def create
