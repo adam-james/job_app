@@ -3,7 +3,7 @@ class ChoresController < ApplicationController
   end
 
   def create
-    puts "not implemented..."
+    ChoreJob.perform_later
     redirect_to action: :index
   end
 end
