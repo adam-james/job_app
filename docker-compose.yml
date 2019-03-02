@@ -1,0 +1,44 @@
+version: '3.4'
+
+services:
+  db:
+    image: 'postgres'
+    volumes:
+      - ./tmp/db:/lib/postgresql/data
+
+  cache:
+    image: redis
+    expose:
+      - 6379
+
+  worker:
+    build:
+      context: .
+      target: worker
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
+    environment:
+      REDIS_URL: redis://cache
+    depends_on:
+      - cache
+      - db
+
+  web:
+    build:
+      context: .
+      target: web_dev
+    volumes:
+      - .:/app
+    tmpfs: /app/tmp/pids
+    ports:
+      - 3000:3000
+    stdin_open: true
+    tty: true
+    environment:
+      REDIS_URL: redis://cache
+    depends_on:
+      - cache
+      - db
+      - worker
