@@ -1,0 +1,142 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: job-app-worker
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: job-app-worker
+    spec:
+      containers:
+      - name: job-app-worker
+        image: jobappregistry.azurecr.io/job_app_worker:v3
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+        env:
+        - name: RAILS_ENV
+          value: production
+        - name: REDIS_PORT
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: redis-port
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: redis-host
+        - name: REDIS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: redis-key
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: db-database
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: db-username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: db-password
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: db-host
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: job-app-web
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: job-app-web
+    spec:
+      containers:
+      - name: job-app-web
+        image: jobappregistry.azurecr.io/job_app_web:v3
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+        env:
+        - name: RAILS_ENV
+          value: production
+        - name: REDIS_PORT
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: redis-port
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: redis-host
+        - name: REDIS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: redis-key
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: db-database
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: db-username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: db-password
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: job-app-secrets
+              key: db-host
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: job-app-web
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    protocol: TCP
+    name: http
+    # Set the target port.
+    targetPort: 3000
+  selector:
+    app: job-app-web

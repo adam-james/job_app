@@ -14,7 +14,7 @@ services:
   worker:
     build:
       context: .
-      target: worker
+      target: worker_dev
     volumes:
       - .:/app
     stdin_open: true
