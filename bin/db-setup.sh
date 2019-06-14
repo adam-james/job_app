@@ -15,6 +15,9 @@ az postgres server firewall-rule create --resource-group $GROUP \
   --server $DB_SERVER_NAME --name AllowAllIps --start-ip-address 0.0.0.0 \
   --end-ip-address 255.255.255.255
 
+# Set pg password
+export PGPASSWORD=$ADMINPWORD
+
 psql -U $ADMINUSER@$DB_SERVER_NAME -h $DB_SERVER_NAME.postgres.database.azure.com \
   -c "CREATE DATABASE $DB_DATABASE;" postgres
 
