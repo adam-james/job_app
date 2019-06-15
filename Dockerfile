@@ -1,4 +1,4 @@
-FROM ruby:2.5 as base
+FROM ruby:2.5.3 as base
 
 LABEL Name=job_app Version=0.0.1
 
